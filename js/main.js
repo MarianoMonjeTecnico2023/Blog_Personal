@@ -364,6 +364,9 @@ class Main {
 document.addEventListener('DOMContentLoaded', () => {
     const app = new Main();
     
+    // Inicializar autenticación
+    auth.init();
+    
     // Configurar funciones adicionales
     app.setupActionButtons();
     app.setupFooterLinks();

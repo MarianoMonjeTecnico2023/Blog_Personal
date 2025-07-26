@@ -260,6 +260,12 @@
     margin-top: var(--spacing-2);
 }
 
+.dropdown-menu.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
 .user-menu:hover .dropdown-menu {
     opacity: 1;
     visibility: visible;

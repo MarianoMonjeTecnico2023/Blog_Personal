@@ -5,31 +5,17 @@ class Auth {
         this.init();
     }
 
+    // Inicializar autenticación
     init() {
         this.checkAuthStatus();
         this.setupEventListeners();
         this.setupModals();
-        
-        // Forzar actualización de UI después de un breve delay
-        setTimeout(() => {
-            this.updateUI();
-        }, 100);
     }
 
     // Verificar estado de autenticación al cargar
     checkAuthStatus() {
         if (api.isAuthenticated() && !api.isTokenExpired()) {
             this.currentUser = api.getUserFromToken();
-            
-            // Debug temporal - remover después de verificar
-            if (this.currentUser) {
-                console.log('🔍 DEBUG - Información del usuario:', {
-                    username: this.currentUser.username,
-                    role: this.currentUser.role,
-                    exp: this.currentUser.exp
-                });
-            }
-            
             this.updateUI();
         } else {
             // Limpiar token expirado o inválido
@@ -41,7 +27,7 @@ class Auth {
 
     // Configurar event listeners
     setupEventListeners() {
-        // Botones de login/registro
+        // Botones de autenticación
         document.getElementById('login-btn')?.addEventListener('click', () => this.showLoginModal());
         document.getElementById('register-btn')?.addEventListener('click', () => this.showRegisterModal());
         
@@ -51,9 +37,24 @@ class Auth {
             this.logout();
         });
 
-        // Formularios
-        document.getElementById('login-form')?.addEventListener('submit', (e) => this.handleLogin(e));
-        document.getElementById('register-form')?.addEventListener('submit', (e) => this.handleRegister(e));
+        // Botón de usuario para mostrar/ocultar dropdown
+        document.getElementById('user-btn')?.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            const dropdown = document.getElementById('dropdown-menu');
+            if (dropdown) {
+                dropdown.classList.toggle('show');
+            }
+        });
+
+        // Cerrar dropdown al hacer click fuera
+        document.addEventListener('click', (e) => {
+            const userMenu = document.getElementById('user-menu');
+            const dropdown = document.getElementById('dropdown-menu');
+            if (userMenu && !userMenu.contains(e.target) && dropdown) {
+                dropdown.classList.remove('show');
+            }
+        });
 
         // Switches entre modales
         document.getElementById('switch-to-register')?.addEventListener('click', (e) => {
@@ -67,6 +68,14 @@ class Auth {
             this.hideRegisterModal();
             this.showLoginModal();
         });
+
+        // Formularios
+        document.getElementById('login-form')?.addEventListener('submit', (e) => this.handleLogin(e));
+        document.getElementById('register-form')?.addEventListener('submit', (e) => this.handleRegister(e));
+
+        // Cerrar modales
+        document.getElementById('login-modal-close')?.addEventListener('click', () => this.hideLoginModal());
+        document.getElementById('register-modal-close')?.addEventListener('click', () => this.hideRegisterModal());
     }
 
     // Configurar modales
@@ -323,14 +332,10 @@ class Auth {
             
             // Mostrar enlace de administración solo para admins
             if (adminLink && this.currentUser.role === 'admin') {
-                console.log('🔍 DEBUG - Usuario es admin, mostrando enlace de administración');
                 adminLink.style.display = 'block';
                 adminLink.href = 'admin.html';
-            } else {
-                console.log('🔍 DEBUG - Usuario NO es admin o no hay adminLink:', {
-                    hasAdminLink: !!adminLink,
-                    userRole: this.currentUser?.role
-                });
+            } else if (adminLink) {
+                adminLink.style.display = 'none';
             }
         } else {
             // Usuario no autenticado o token expirado
