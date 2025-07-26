@@ -1,7 +1,7 @@
 // ===== API CLIENT =====
 class API {
     constructor() {
-        this.baseURL = 'http://localhost:3000';
+        this.baseURL = 'https://blog-server-53il.onrender.com';
         this.token = localStorage.getItem('token');
     }
 
@@ -29,35 +29,32 @@ class API {
     }
 
     // Método genérico para hacer peticiones
-    async request(endpoint, options = {}) {
-        try {
-            const url = `${this.baseURL}${endpoint}`;
-            const config = {
-                headers: this.getHeaders(),
-                ...options
-            };
-
-            const response = await fetch(url, config);
-            
-            // Si la respuesta no es exitosa, lanzar error
-            if (!response.ok) {
-                const errorData = await response.json().catch(() => ({}));
-                throw new Error(errorData.message || errorData.error || `HTTP error! status: ${response.status}`);
-            }
-
-            // Si la respuesta es 204 (No Content), retornar null
-            if (response.status === 204) {
-                return null;
-            }
-
-            // Intentar parsear JSON
-            const data = await response.json();
-            return data;
-        } catch (error) {
-            throw error;
+   async request(endpoint, options = {}) {
+    try {
+        const url = `${this.baseURL}${endpoint}`;
+        const config = {
+            headers: this.getHeaders(),
+            ...options
+        };
+        const response = await fetch(url, config);
+        
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(errorData.message || errorData.error || `HTTP error! status: ${response.status}`);
         }
-    }
+        
+        if (response.status === 204) {
+            return null;
+        }
 
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        // Añade esta línea para ver el error completo
+        console.error('Error en la petición API:', error);
+        throw error;
+    }
+}
     // ===== AUTENTICACIÓN =====
     
     // Registrar usuario
