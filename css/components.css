@@ -224,6 +224,36 @@
 /* ===== DROPDOWN MENU ===== */
 .user-menu {
     position: relative;
+    display: none;
+}
+
+/* Estados de autenticación para el menú de usuario */
+.user-menu.user-authenticated {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+.user-menu.user-not-authenticated {
+    display: none !important;
+}
+
+/* Estados de autenticación para el enlace de admin */
+#admin-link.user-authenticated {
+    display: block !important;
+    visibility: visible !important;
+}
+
+#admin-link.user-not-authenticated {
+    display: none !important;
+}
+
+/* Forzar visibilidad cuando el usuario está autenticado */
+.user-menu[style*="display: block"],
+.user-menu[style*="visibility: visible"] {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
 }
 
 .user-btn {

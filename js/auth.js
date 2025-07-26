@@ -14,15 +14,8 @@ class Auth {
 
     // Verificar estado de autenticación al cargar
     checkAuthStatus() {
-        // Debug temporal para diagnosticar
-        const token = localStorage.getItem('token');
-        console.log('🔍 DEBUG - Token existe:', !!token);
-        console.log('🔍 DEBUG - api.isAuthenticated():', api.isAuthenticated());
-        console.log('🔍 DEBUG - api.isTokenExpired():', api.isTokenExpired());
-        
         if (api.isAuthenticated() && !api.isTokenExpired()) {
             this.currentUser = api.getUserFromToken();
-            console.log('🔍 DEBUG - Usuario obtenido:', this.currentUser);
             this.updateUI();
             
             // Forzar actualización adicional después de un breve delay
@@ -30,7 +23,6 @@ class Auth {
                 this.updateUI();
             }, 200);
         } else {
-            console.log('🔍 DEBUG - Usuario NO autenticado o token expirado');
             // Limpiar token expirado o inválido
             api.logout();
             this.currentUser = null;
@@ -328,67 +320,49 @@ class Auth {
 
     // Actualizar interfaz de usuario
     updateUI() {
-        console.log('🔍 DEBUG - updateUI() ejecutándose');
-        
         const authButtons = document.querySelector('.nav-auth');
         const userMenu = document.getElementById('user-menu');
         const usernameDisplay = document.getElementById('username-display');
         const adminLink = document.getElementById('admin-link');
 
-        console.log('🔍 DEBUG - Elementos encontrados:', {
-            authButtons: !!authButtons,
-            userMenu: !!userMenu,
-            usernameDisplay: !!usernameDisplay,
-            adminLink: !!adminLink
-        });
-
         if (this.currentUser && api.isAuthenticated() && !api.isTokenExpired()) {
-            console.log('🔍 DEBUG - Usuario autenticado válido:', this.currentUser);
-            
             // Usuario autenticado válido
             if (authButtons) {
-                authButtons.style.display = 'none';
-                authButtons.style.visibility = 'hidden';
-                console.log('🔍 DEBUG - Ocultando botones de auth');
+                authButtons.classList.add('user-authenticated');
+                authButtons.classList.remove('user-not-authenticated');
             }
             if (userMenu) {
-                userMenu.style.display = 'block';
-                userMenu.style.visibility = 'visible';
-                userMenu.style.opacity = '1';
-                console.log('🔍 DEBUG - Mostrando menú de usuario');
+                userMenu.classList.add('user-authenticated');
+                userMenu.classList.remove('user-not-authenticated');
                 if (usernameDisplay) {
                     usernameDisplay.textContent = this.currentUser.username;
-                    console.log('🔍 DEBUG - Username actualizado:', this.currentUser.username);
                 }
             }
             
             // Mostrar enlace de administración solo para admins
             if (adminLink && this.currentUser.role === 'admin') {
-                adminLink.style.display = 'block';
-                adminLink.style.visibility = 'visible';
+                adminLink.classList.add('user-authenticated');
+                adminLink.classList.remove('user-not-authenticated');
                 adminLink.href = 'admin.html';
-                console.log('🔍 DEBUG - Mostrando enlace de administración');
             } else if (adminLink) {
-                adminLink.style.display = 'none';
+                adminLink.classList.remove('user-authenticated');
+                adminLink.classList.add('user-not-authenticated');
             }
         } else {
-            console.log('🔍 DEBUG - Usuario NO autenticado o token expirado');
-            
             // Usuario no autenticado o token expirado
             if (authButtons) {
-                authButtons.style.display = 'flex';
-                authButtons.style.visibility = 'visible';
-                console.log('🔍 DEBUG - Mostrando botones de auth');
+                authButtons.classList.remove('user-authenticated');
+                authButtons.classList.add('user-not-authenticated');
             }
             if (userMenu) {
-                userMenu.style.display = 'none';
-                userMenu.style.visibility = 'hidden';
-                console.log('🔍 DEBUG - Ocultando menú de usuario');
+                userMenu.classList.remove('user-authenticated');
+                userMenu.classList.add('user-not-authenticated');
             }
             
             // Ocultar enlace de administración
             if (adminLink) {
-                adminLink.style.display = 'none';
+                adminLink.classList.remove('user-authenticated');
+                adminLink.classList.add('user-not-authenticated');
             }
         }
     }

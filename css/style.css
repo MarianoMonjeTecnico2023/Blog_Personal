@@ -241,6 +241,22 @@ a:hover {
     gap: var(--spacing-3);
 }
 
+/* Estados de autenticación */
+.nav-auth.user-authenticated {
+    display: none !important;
+}
+
+.nav-auth.user-not-authenticated {
+    display: flex !important;
+}
+
+/* Forzar ocultación de botones de auth cuando el usuario está autenticado */
+.nav-auth[style*="display: none"],
+.nav-auth[style*="visibility: hidden"] {
+    display: none !important;
+    visibility: hidden !important;
+}
+
 .nav-toggle {
     display: none;
     flex-direction: column;
