@@ -168,7 +168,6 @@ class Auth {
 
         try {
             this.showLoading(form);
-            console.log('Intentando iniciar sesión con usuario:', username);
             const response = await api.login(username, password);
             
             this.currentUser = api.getUserFromToken();
@@ -183,7 +182,6 @@ class Auth {
             }
             
         } catch (error) {
-            console.error('Error en login:', error);
             let errorMessage = 'Error al iniciar sesión';
             
             if (error.message.includes('401')) {
@@ -241,7 +239,6 @@ class Auth {
 
         try {
             this.showLoading(form);
-            console.log('Intentando registrar usuario:', username);
             await api.register(username, password);
             
             this.hideRegisterModal();
@@ -250,7 +247,6 @@ class Auth {
             this.showNotification('¡Registro exitoso! Ahora puedes iniciar sesión', 'success');
             
         } catch (error) {
-            console.error('Error en registro:', error);
             let errorMessage = 'Error al registrarse';
             
             if (error.message.includes('409')) {
@@ -304,11 +300,8 @@ class Auth {
         const userMenu = document.getElementById('user-menu');
         const usernameDisplay = document.getElementById('username-display');
 
-        console.log('Actualizando UI - Usuario actual:', this.currentUser);
-
         if (this.currentUser && api.isAuthenticated() && !api.isTokenExpired()) {
             // Usuario autenticado válido
-            console.log('Mostrando menú de usuario');
             if (authButtons) authButtons.style.display = 'none';
             if (userMenu) {
                 userMenu.style.display = 'block';
@@ -318,7 +311,6 @@ class Auth {
             }
         } else {
             // Usuario no autenticado o token expirado
-            console.log('Mostrando botones de autenticación');
             if (authButtons) authButtons.style.display = 'flex';
             if (userMenu) userMenu.style.display = 'none';
         }

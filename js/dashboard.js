@@ -147,11 +147,7 @@ class Dashboard {
         input.accept = 'image/*';
         
         input.addEventListener('change', (e) => {
-            console.log('🎯 EVENTO CHANGE DETECTADO');
-            console.log('📁 Archivos seleccionados en input:', e.target.files);
             const files = Array.from(e.target.files);
-            console.log('🔄 Archivos convertidos a array:', files);
-            console.log('📞 Llamando a handleMultipleImages...');
             this.handleMultipleImages(files);
         });
         
@@ -160,11 +156,6 @@ class Dashboard {
 
     // Manejar múltiples imágenes
     async handleMultipleImages(files) {
-        console.log('🚀 === INICIANDO SUBIDA DE IMÁGENES ===');
-        console.log('📁 Archivos recibidos:', files);
-        console.log('🔢 Número de archivos:', files.length);
-        console.log('📍 Esta función se está ejecutando desde dashboard.js');
-        
         // Filtrar solo imágenes
         const imageFiles = files.filter(file => file.type.startsWith('image/'));
         
@@ -205,27 +196,14 @@ class Dashboard {
                 await this.addImagePreview(file);
 
                 // Subir al servidor
-                console.log(`🔄 Subiendo imagen ${i + 1}: ${file.name}`);
-                console.log(`📤 Enviando petición a /upload-image...`);
-                
                 const uploadedImage = await api.uploadImage(file);
-                
-                console.log(`✅ Imagen ${i + 1} subida exitosamente:`, uploadedImage);
-                console.log(`📋 Tipo de uploadedImage:`, typeof uploadedImage);
-                console.log(`🔗 uploadedImage.url:`, uploadedImage?.url);
-                console.log(`📄 uploadedImage completo:`, JSON.stringify(uploadedImage, null, 2));
                 
                 // Verificar que la imagen tiene URL
                 if (!uploadedImage || !uploadedImage.url) {
-                    console.error(`❌ ERROR: Imagen ${i + 1} no tiene URL válida`);
                     throw new Error(`Imagen ${file.name} no se subió correctamente`);
                 }
                 
                 this.selectedImages.push(uploadedImage);
-                console.log(`📝 Imagen ${i + 1} agregada a selectedImages`);
-                console.log(`📊 selectedImages después de agregar imagen ${i + 1}:`, this.selectedImages);
-                console.log(`🔢 selectedImages.length:`, this.selectedImages.length);
-                console.log(`✅ URL de la imagen agregada:`, uploadedImage.url);
 
                 // Actualizar preview con URL del servidor
                 this.updateImagePreview(uploadedImage, i);
@@ -236,7 +214,6 @@ class Dashboard {
             auth.showNotification(`${validFiles.length} imagen(es) subida(s) correctamente`, 'success');
 
         } catch (error) {
-            console.error('Error al subir imágenes:', error);
             this.hideUploadProgress();
             
             // Manejar error de token expirado específicamente
@@ -324,19 +301,11 @@ class Dashboard {
             if (img) {
                 img.src = uploadedImage.url;
                 img.alt = uploadedImage.url.split('/').pop() || 'Imagen subida';
-                console.log(`🖼️ Imagen ${index + 1} actualizada con URL:`, uploadedImage.url);
             }
             
             if (loading) {
                 loading.style.display = 'none';
-                console.log(`Loading oculto para imagen ${index + 1}`);
             }
-        } else {
-            console.error(`No se encontró el elemento de imagen con índice ${index}`);
-            console.log('Elementos de imagen encontrados:', imageDivs.length);
-            imageDivs.forEach((div, i) => {
-                console.log(`Elemento ${i}:`, div.dataset.index, div.dataset.filename);
-            });
         }
     }
 
@@ -355,7 +324,6 @@ class Dashboard {
         this.selectedImages.forEach((image, index) => {
             // Solo mostrar imágenes válidas
             if (!image || !image.url) {
-                console.warn(`Imagen ${index} inválida:`, image);
                 return;
             }
             
@@ -465,27 +433,10 @@ class Dashboard {
         try {
             this.showLoading(form);
             
-            // Debug: Ver qué contiene selectedImages
-            console.log('=== DEBUG: PUBLICANDO HISTORIA ===');
-            console.log('selectedImages:', this.selectedImages);
-            console.log('selectedImages.length:', this.selectedImages.length);
-            
-            // Debug detallado de cada imagen
-            this.selectedImages.forEach((img, index) => {
-                console.log(`Imagen ${index}:`, img);
-                console.log(`Imagen ${index} tipo:`, typeof img);
-                console.log(`Imagen ${index} url:`, img?.url);
-                console.log(`Imagen ${index} keys:`, img ? Object.keys(img) : 'null/undefined');
-            });
-            
             // Preparar datos de la historia con múltiples imágenes
             const imageUrls = this.selectedImages.map(img => img?.url).filter(url => url != null);
-            console.log('imageUrls extraídas:', imageUrls);
-            console.log('imageUrls.length:', imageUrls.length);
             
             const featuredImage = imageUrls.length > 0 ? imageUrls[0] : null;
-            console.log('featuredImage:', featuredImage);
-            console.log('=====================================');
             
             if (isEditing) {
                 // Modo edición
@@ -504,7 +455,6 @@ class Dashboard {
             this.hideNewStoryModal();
             
         } catch (error) {
-            console.error('Error al procesar historia:', error);
             const action = isEditing ? 'actualizar' : 'publicar';
             auth.showNotification(`Error al ${action} la historia`, 'error');
         } finally {
@@ -561,7 +511,7 @@ class Dashboard {
             // Por ahora solo cargamos las historias
             await this.loadMyStories();
         } catch (error) {
-            console.error('Error al cargar datos del dashboard:', error);
+            // Error al cargar datos del dashboard
         }
     }
 
@@ -576,11 +526,6 @@ class Dashboard {
             const response = await api.getMyStories();
             
             if (loading) loading.style.display = 'none';
-            
-            console.log('=== HISTORIAS DEL USUARIO ===');
-            console.log('Respuesta:', response);
-            console.log('Historias:', response.stories);
-            console.log('=============================');
             
             if (response.stories && response.stories.length > 0) {
                 grid.innerHTML = response.stories.map(story => this.createStoryCard(story)).join('');
@@ -599,7 +544,6 @@ class Dashboard {
             }
 
         } catch (error) {
-            console.error('Error al cargar historias:', error);
             if (loading) loading.style.display = 'none';
             
             grid.innerHTML = `
@@ -614,12 +558,6 @@ class Dashboard {
 
     // Crear tarjeta de historia para el dashboard
     createStoryCard(story) {
-        console.log('Creando tarjeta para historia:', {
-            id: story._id,
-            title: story.title,
-            content: story.content.substring(0, 50) + '...'
-        });
-        
         const date = new Date(story.createdAt).toLocaleDateString('es-ES', {
             year: 'numeric',
             month: 'long',
@@ -710,8 +648,6 @@ class Dashboard {
     // Editar historia
     async editStory(storyId) {
         try {
-            console.log('Editando historia:', storyId);
-            
             // Cargar datos de la historia
             const response = await api.getMyStory(storyId);
             const story = response.story;
@@ -723,7 +659,6 @@ class Dashboard {
             this.showEditModal(storyId);
             
         } catch (error) {
-            console.error('Error cargando historia para editar:', error);
             auth.showNotification('Error al cargar la historia', 'error');
         }
     }
@@ -744,7 +679,6 @@ class Dashboard {
             this.selectedImages = story.images
                 .filter(url => url != null && url !== '')
                 .map(url => ({ url }));
-            console.log('Imágenes cargadas para edición:', this.selectedImages);
         }
         
         this.updateImagesPreview();
@@ -772,11 +706,6 @@ class Dashboard {
 
     // Ver historia
     viewStory(storyId) {
-        console.log('=== VER HISTORIA ===');
-        console.log('ID recibido:', storyId);
-        console.log('Tipo de ID:', typeof storyId);
-        console.log('URL que se va a generar:', `story.html?id=${storyId}`);
-        console.log('====================');
         window.location.href = `story.html?id=${storyId}`;
     }
 
@@ -791,7 +720,6 @@ class Dashboard {
                 this.loadMyStories();
                 
             } catch (error) {
-                console.error('Error eliminando historia:', error);
                 auth.showNotification('Error al eliminar la historia', 'error');
             }
         }
@@ -806,14 +734,11 @@ class Dashboard {
             if (loading) loading.style.display = 'block';
             
             const response = await api.getMyImages();
-            console.log('Respuesta de getMyImages:', response);
             
             if (loading) loading.style.display = 'none';
             
             // La API devuelve { images: [...], pagination: {...} }
             const images = response.images || [];
-            console.log('Imágenes extraídas:', images);
-            console.log('Número de imágenes:', images.length);
             
             if (images && images.length > 0) {
                 grid.innerHTML = images.map(image => `
@@ -840,7 +765,6 @@ class Dashboard {
             }
 
         } catch (error) {
-            console.error('Error al cargar imágenes:', error);
             if (loading) loading.style.display = 'none';
             
             grid.innerHTML = `
@@ -888,7 +812,6 @@ class Dashboard {
                 auth.showNotification('Imagen eliminada correctamente', 'success');
                 this.loadMyImages(); // Recargar imágenes
             } catch (error) {
-                console.error('Error al eliminar imagen:', error);
                 auth.showNotification('Error al eliminar la imagen', 'error');
             }
         }
@@ -911,5 +834,4 @@ class Dashboard {
 // Inicializar dashboard cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', () => {
     window.dashboard = new Dashboard();
-    console.log('🚀 Dashboard inicializado correctamente');
 }); 

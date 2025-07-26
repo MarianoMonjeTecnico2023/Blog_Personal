@@ -37,16 +37,11 @@ class API {
                 ...options
             };
 
-            console.log('API Request:', url, config);
-
             const response = await fetch(url, config);
-            
-            console.log('API Response:', response.status, response.statusText);
             
             // Si la respuesta no es exitosa, lanzar error
             if (!response.ok) {
                 const errorData = await response.json().catch(() => ({}));
-                console.error('API Error Response:', errorData);
                 throw new Error(errorData.message || errorData.error || `HTTP error! status: ${response.status}`);
             }
 
@@ -57,10 +52,8 @@ class API {
 
             // Intentar parsear JSON
             const data = await response.json();
-            console.log('API Success Response:', data);
             return data;
         } catch (error) {
-            console.error('API Error:', error);
             throw error;
         }
     }
@@ -176,7 +169,6 @@ class API {
                 
                 // Si el token expiró, intentar renovar o redirigir al login
                 if (response.status === 401 && errorData.message?.includes('Token')) {
-                    console.error('Token expirado, redirigiendo al login...');
                     // Limpiar token expirado
                     this.logout();
                     // Lanzar error específico para token expirado
@@ -187,12 +179,10 @@ class API {
             }
 
             const result = await response.json();
-            console.log('Respuesta de uploadImage:', result);
             
             // Retornar solo la parte image del resultado
             return result.image;
         } catch (error) {
-            console.error('Upload Error:', error);
             throw error;
         }
     }
@@ -266,14 +256,11 @@ class API {
             const response = await fetch(`${this.baseURL}/health`);
             if (response.ok) {
                 const data = await response.json();
-                console.log('Health check successful:', data);
                 return data;
             } else {
-                console.error('Health check failed:', response.status);
                 throw new Error('Servidor no disponible');
             }
         } catch (error) {
-            console.error('Health check error:', error);
             throw new Error('No se puede conectar al servidor');
         }
     }
@@ -295,7 +282,6 @@ class API {
                 exp: payload.exp
             };
         } catch (error) {
-            console.error('Error parsing token:', error);
             return null;
         }
     }

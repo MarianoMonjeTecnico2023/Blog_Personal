@@ -159,9 +159,7 @@ class Main {
     async checkServerConnection() {
         try {
             await api.healthCheck();
-            console.log('✅ Servidor conectado correctamente');
         } catch (error) {
-            console.error('❌ Error conectando con el servidor:', error);
             this.showServerError();
         }
     }
@@ -307,10 +305,10 @@ class Main {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('/sw.js')
                     .then(registration => {
-                        console.log('Service Worker registrado correctamente:', registration);
+                        // Service Worker registrado correctamente
                     })
                     .catch(registrationError => {
-                        console.log('Error al registrar Service Worker:', registrationError);
+                        // Error al registrar Service Worker
                     });
             });
         }
@@ -340,7 +338,7 @@ class Main {
             deferredPrompt.prompt();
             deferredPrompt.userChoice.then((choiceResult) => {
                 if (choiceResult.outcome === 'accepted') {
-                    console.log('Usuario aceptó la instalación');
+                    // Usuario aceptó la instalación
                 }
                 deferredPrompt = null;
                 installBtn.remove();
@@ -364,16 +362,14 @@ document.addEventListener('DOMContentLoaded', () => {
     app.setupForms();
     app.setupAccessibility();
     app.setupPWA();
-    
-    console.log('🚀 Aplicación inicializada correctamente');
 });
 
 // Manejar errores no capturados
 window.addEventListener('error', (e) => {
-    console.error('Error no capturado:', e.error);
+    // Error no capturado
 });
 
 // Manejar promesas rechazadas
 window.addEventListener('unhandledrejection', (e) => {
-    console.error('Promesa rechazada no manejada:', e.reason);
+    // Promesa rechazada no manejada
 }); 

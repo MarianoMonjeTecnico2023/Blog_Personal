@@ -21,8 +21,6 @@ class StoryViewer {
             this.showError('No se especificó un ID de historia válido.');
             return;
         }
-        
-        console.log('ID de historia:', this.storyId);
     }
 
     // Configurar event listeners
@@ -38,8 +36,6 @@ class StoryViewer {
         try {
             this.showLoading();
             
-            console.log('Cargando historia con ID:', this.storyId);
-            
             // Obtener la historia del servidor
             const response = await fetch(`${api.baseURL}/stories/${this.storyId}`);
             
@@ -54,12 +50,9 @@ class StoryViewer {
             const data = await response.json();
             this.story = data.story;
             
-            console.log('Historia cargada:', this.story);
-            
             this.renderStory();
             
         } catch (error) {
-            console.error('Error cargando historia:', error);
             this.showError(error.message);
         } finally {
             this.hideLoading();

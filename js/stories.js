@@ -65,14 +65,6 @@ class Stories {
 
             const response = await api.getStories(page, 6); // 6 historias por página
             
-            // Console.log para analizar los datos que trae la API
-            console.log('=== DATOS DE LA API DE HISTORIAS ===');
-            console.log('Respuesta completa:', response);
-            console.log('Historias:', response.stories);
-            console.log('Paginación:', response.pagination);
-            console.log('Estructura de cada historia:', response.stories.length > 0 ? response.stories[0] : 'No hay historias');
-            console.log('=====================================');
-            
             this.stories = response.stories;
             this.filteredStories = [...this.stories];
             this.currentPage = response.pagination.page;
@@ -85,7 +77,6 @@ class Stories {
             this.updatePagination();
 
         } catch (error) {
-            console.error('Error cargando historias:', error);
             this.showError('Error al cargar las historias. Por favor, intenta de nuevo.');
         } finally {
             this.loading = false;

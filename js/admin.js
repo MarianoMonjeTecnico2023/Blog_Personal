@@ -33,7 +33,6 @@ class AdminPanel {
             document.getElementById('username').textContent = user.username;
             
         } catch (error) {
-            console.error('Error verificando acceso admin:', error);
             this.showError('Error verificando permisos de administrador.');
         }
     }
@@ -100,7 +99,7 @@ class AdminPanel {
             this.stats = stats;
             this.updateStatsDisplay();
         } catch (error) {
-            console.error('Error cargando estadísticas:', error);
+            // Error cargando estadísticas
         }
     }
 
@@ -120,7 +119,6 @@ class AdminPanel {
             this.renderStoriesTable();
             this.renderStoriesPagination(response.pagination);
         } catch (error) {
-            console.error('Error cargando historias:', error);
             this.showError('Error al cargar las historias');
         }
     }
@@ -225,7 +223,7 @@ class AdminPanel {
             ];
             this.renderUsersTable();
         } catch (error) {
-            console.error('Error cargando usuarios:', error);
+            // Error cargando usuarios
         }
     }
 
@@ -280,7 +278,7 @@ class AdminPanel {
             const bannedUsers = this.users.filter(u => u.status === 'banned');
             this.renderBannedUsers(bannedUsers);
         } catch (error) {
-            console.error('Error cargando datos de moderación:', error);
+            // Error cargando datos de moderación
         }
     }
 
@@ -355,7 +353,7 @@ class AdminPanel {
                 </div>
             `;
         } catch (error) {
-            console.error('Error cargando logs:', error);
+            // Error cargando logs
         }
     }
 
@@ -369,7 +367,6 @@ class AdminPanel {
             this.loadStories();
             this.loadStats();
         } catch (error) {
-            console.error('Error eliminando historia:', error);
             this.showError('Error al eliminar la historia');
         }
     }
@@ -380,7 +377,6 @@ class AdminPanel {
             this.showSuccess('Historia marcada como reportada');
             this.loadStories();
         } catch (error) {
-            console.error('Error marcando historia:', error);
             this.showError('Error al marcar la historia');
         }
     }
@@ -391,7 +387,6 @@ class AdminPanel {
             this.showSuccess('Historia aprobada correctamente');
             this.loadStories();
         } catch (error) {
-            console.error('Error aprobando historia:', error);
             this.showError('Error al aprobar la historia');
         }
     }
@@ -418,7 +413,6 @@ class AdminPanel {
             this.loadUsers();
             this.loadStats();
         } catch (error) {
-            console.error('Error baneando usuario:', error);
             this.showError('Error al banear el usuario');
         }
     }
@@ -432,7 +426,6 @@ class AdminPanel {
             this.loadUsers();
             this.loadStats();
         } catch (error) {
-            console.error('Error desbaneando usuario:', error);
             this.showError('Error al desbanear el usuario');
         }
     }
@@ -471,7 +464,7 @@ class AdminPanel {
 
             modal.classList.add('active');
         } catch (error) {
-            console.error('Error mostrando detalles de historia:', error);
+            // Error mostrando detalles de historia
         }
     }
 
@@ -498,7 +491,7 @@ class AdminPanel {
 
             modal.classList.add('active');
         } catch (error) {
-            console.error('Error mostrando detalles de usuario:', error);
+            // Error mostrando detalles de usuario
         }
     }
 
@@ -525,12 +518,10 @@ class AdminPanel {
     // Notificaciones
     showSuccess(message) {
         // Implementar notificación de éxito
-        console.log('Success:', message);
     }
 
     showError(message) {
         // Implementar notificación de error
-        console.error('Error:', message);
     }
 
     // Refresh functions
