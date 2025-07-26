@@ -1,7 +1,7 @@
 // ===== API CLIENT =====
 class API {
     constructor() {
-        this.baseURL = 'http://localhost:3000';
+        this.baseURL = 'https://blog-server-53il.onrender.com';
         this.token = localStorage.getItem('token');
     }
 
