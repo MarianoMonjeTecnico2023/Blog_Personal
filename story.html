@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historia - Mi Blog</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav">
+            <div class="nav-brand">
+                <a href="index.html">
+                    <i class="fas fa-pen-fancy"></i>
+                    <span>Mi Blog</span>
+                </a>
+            </div>
+            
+            <div class="nav-menu">
+                <a href="index.html" class="nav-link">Inicio</a>
+                <a href="index.html#stories" class="nav-link">Historias</a>
+                <a href="index.html#about" class="nav-link">Acerca de</a>
+                <a href="index.html#contact" class="nav-link">Contacto</a>
+            </div>
+            
+            <div class="nav-auth" id="nav-auth">
+                <button class="btn btn-outline" onclick="auth.showLoginModal()">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Iniciar Sesión
+                </button>
+                <button class="btn btn-primary" onclick="auth.showRegisterModal()">
+                    <i class="fas fa-user-plus"></i>
+                    Registrarse
+                </button>
+            </div>
+            
+            <div class="user-menu" id="user-menu" style="display: none;">
+                <div class="user-info">
+                    <i class="fas fa-user-circle"></i>
+                    <span id="username">Usuario</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="user-dropdown">
+                    <a href="dashboard.html" class="dropdown-item">
+                        <i class="fas fa-tachometer-alt"></i>
+                        Dashboard
+                    </a>
+                    <a href="#" class="dropdown-item" onclick="auth.logout()">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Cerrar Sesión
+                    </a>
+                </div>
+            </div>
+            
+            <button class="mobile-menu-btn" id="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <!-- Loading -->
+        <div class="loading-container" id="loading">
+            <div class="loading-spinner">
+                <div class="spinner"></div>
+                <p>Cargando historia...</p>
+            </div>
+        </div>
+
+        <!-- Error State -->
+        <div class="error-container" id="error" style="display: none;">
+            <div class="error-state">
+                <i class="fas fa-exclamation-triangle"></i>
+                <h3>Error al cargar la historia</h3>
+                <p id="error-message">No se pudo cargar la historia solicitada.</p>
+                <button class="btn btn-primary" onclick="window.location.href='index.html'">
+                    <i class="fas fa-home"></i>
+                    Volver al Inicio
+                </button>
+            </div>
+        </div>
+
+        <!-- Story Content -->
+        <article class="story-container" id="story-container" style="display: none;">
+            <!-- Back Button -->
+            <div class="story-header">
+                <button class="btn btn-outline" onclick="window.history.back()">
+                    <i class="fas fa-arrow-left"></i>
+                    Volver
+                </button>
+            </div>
+
+            <!-- Story Content -->
+            <div class="story-content">
+                <header class="story-header-content">
+                    <h1 class="story-title" id="story-title">Título de la Historia</h1>
+                    <div class="story-meta">
+                        <div class="story-author">
+                            <i class="fas fa-user"></i>
+                            <span id="story-author">Autor</span>
+                        </div>
+                        <div class="story-date" id="story-date">Fecha</div>
+                        <div class="story-images-count" id="story-images-count" style="display: none;">
+                            <i class="fas fa-images"></i>
+                            <span id="images-count">0 imágenes</span>
+                        </div>
+                    </div>
+                </header>
+
+                <!-- Featured Image -->
+                <div class="story-featured-image" id="story-featured-image" style="display: none;">
+                    <img id="featured-image" src="" alt="Imagen destacada">
+                </div>
+
+                <!-- Story Images Gallery -->
+                <div class="story-images-gallery" id="story-images-gallery" style="display: none;">
+                    <h3>Galería de Imágenes</h3>
+                    <div class="images-grid" id="images-grid">
+                        <!-- Las imágenes se cargarán aquí -->
+                    </div>
+                </div>
+
+                <!-- Story Text -->
+                <div class="story-text">
+                    <div class="story-content-text" id="story-content-text">
+                        <!-- El contenido de la historia se cargará aquí -->
+                    </div>
+                </div>
+
+                <!-- Story Actions -->
+                <div class="story-actions">
+                    <button class="btn btn-outline" onclick="shareStory()">
+                        <i class="fas fa-share"></i>
+                        Compartir
+                    </button>
+                    <button class="btn btn-outline" onclick="window.print()">
+                        <i class="fas fa-print"></i>
+                        Imprimir
+                    </button>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Mi Blog</h3>
+                <p>Compartiendo historias y experiencias de vida.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Enlaces</h3>
+                <ul>
+                    <li><a href="index.html">Inicio</a></li>
+                    <li><a href="index.html#stories">Historias</a></li>
+                    <li><a href="index.html#about">Acerca de</a></li>
+                    <li><a href="index.html#contact">Contacto</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Redes Sociales</h3>
+                <div class="social-links">
+                    
+                    <a href="https://www.facebook.com/profile.php?id=61578310936421"><i class="fab fa-facebook"></i></a>
+                   
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Mi Blog. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/story.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html> 

@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Mi Blog</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="nav-logo">
+                    <a href="index.html" style="text-decoration: none; color: inherit;">
+                        <h1>Mi Blog</h1>
+                    </a>
+                </div>
+                <div class="nav-menu" id="nav-menu">
+                    <a href="index.html" class="nav-link">Inicio</a>
+                    <a href="index.html#stories" class="nav-link">Historias</a>
+                    <a href="index.html#about" class="nav-link">Acerca de</a>
+                    <a href="index.html#contact" class="nav-link">Contacto</a>
+                </div>
+                <div class="user-menu" id="user-menu">
+                    <button class="user-btn" id="user-btn">
+                        <i class="fas fa-user"></i>
+                        <span id="username-display">Usuario</span>
+                    </button>
+                    <div class="dropdown-menu" id="dropdown-menu">
+                        <a href="#" class="dropdown-item active">
+                            <i class="fas fa-tachometer-alt"></i>
+                            Dashboard
+                        </a>
+                        <a href="#" class="dropdown-item" id="admin-link" style="display: none;">
+                            <i class="fas fa-cog"></i>
+                            Administración
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" class="dropdown-item" id="logout-btn">
+                            <i class="fas fa-sign-out-alt"></i>
+                            Cerrar Sesión
+                        </a>
+                    </div>
+                </div>
+                <div class="nav-toggle" id="nav-toggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Dashboard Content -->
+    <main class="dashboard-main">
+        <div class="container">
+            <!-- Dashboard Header -->
+            <div class="dashboard-header">
+                <div class="dashboard-title">
+                    <h1>Dashboard</h1>
+                    <p>Gestiona tus historias y contenido</p>
+                </div>
+                <button class="btn btn-primary" id="new-story-btn">
+                    <i class="fas fa-plus"></i>
+                    Nueva Historia
+                </button>
+            </div>
+
+            <!-- Dashboard Stats -->
+            <div class="dashboard-stats">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="total-stories">0</h3>
+                        <p>Historias Publicadas</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-eye"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="total-views">0</h3>
+                        <p>Vistas Totales</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="total-likes">0</h3>
+                        <p>Me Gusta</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard Tabs -->
+            <div class="dashboard-tabs">
+                <button class="tab-btn active" data-tab="stories">
+                    <i class="fas fa-file-alt"></i>
+                    Mis Historias
+                </button>
+                <button class="tab-btn" data-tab="images">
+                    <i class="fas fa-images"></i>
+                    Mis Imágenes
+                </button>
+                <button class="tab-btn" data-tab="drafts">
+                    <i class="fas fa-edit"></i>
+                    Borradores
+                </button>
+            </div>
+
+            <!-- Tab Content -->
+            <div class="tab-content">
+                <!-- Stories Tab -->
+                <div class="tab-pane active" id="stories-tab">
+                    <div class="stories-grid" id="my-stories-grid">
+                        <div class="loading-spinner" id="stories-loading">
+                            <div class="spinner"></div>
+                            <p>Cargando historias...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Images Tab -->
+                <div class="tab-pane" id="images-tab">
+                    <div class="images-grid" id="my-images-grid">
+                        <div class="loading-spinner" id="images-loading">
+                            <div class="spinner"></div>
+                            <p>Cargando imágenes...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Drafts Tab -->
+                <div class="tab-pane" id="drafts-tab">
+                    <div class="drafts-list" id="drafts-list">
+                        <div class="empty-state">
+                            <i class="fas fa-edit"></i>
+                            <h3>No hay borradores</h3>
+                            <p>Comienza a escribir tu primera historia</p>
+                            <button class="btn btn-primary" id="create-draft-btn">
+                                <i class="fas fa-plus"></i>
+                                Crear Borrador
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- New Story Modal -->
+    <div class="modal" id="new-story-modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h2>Nueva Historia</h2>
+                <button class="modal-close" id="new-story-modal-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="new-story-form" class="story-form">
+                    <div class="form-group">
+                        <label for="story-title">Título de la Historia</label>
+                        <input type="text" id="story-title" name="title" required placeholder="Escribe un título atractivo...">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="story-content">Contenido</label>
+                        <textarea id="story-content" name="content" rows="12" required placeholder="Escribe tu historia aquí..."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="story-images">Imágenes de la Historia (Máximo 4)</label>
+                        <div class="images-upload-container">
+                            <div class="images-upload-area" id="images-upload-area">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <p>Haz clic para subir imágenes</p>
+                                <span>o arrastra y suelta aquí (máximo 4 imágenes)</span>
+                                <div class="upload-progress" id="upload-progress" style="display: none;">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" id="progress-fill"></div>
+                                    </div>
+                                    <span id="progress-text">0%</span>
+                                </div>
+                            </div>
+                            <div class="images-preview" id="images-preview">
+                                <!-- Las imágenes se mostrarán aquí -->
+                            </div>
+                            <div class="images-counter">
+                                <span id="images-count">0</span> de 4 imágenes
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-outline" id="save-draft-btn">
+                            <i class="fas fa-save"></i>
+                            Guardar Borrador
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-paper-plane"></i>
+                            Publicar Historia
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal" id="delete-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Confirmar Eliminación</h2>
+                <button class="modal-close" id="delete-modal-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>¿Estás seguro de que quieres eliminar este elemento? Esta acción no se puede deshacer.</p>
+                <div class="modal-actions">
+                    <button class="btn btn-outline" id="cancel-delete-btn">Cancelar</button>
+                    <button class="btn btn-error" id="confirm-delete-btn">Eliminar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+</html> 

@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administración - Mi Blog</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav">
+            <div class="nav-brand">
+                <a href="index.html">
+                    <i class="fas fa-pen-fancy"></i>
+                    <span>Mi Blog</span>
+                </a>
+            </div>
+            
+            <div class="nav-menu">
+                <a href="index.html" class="nav-link">Inicio</a>
+                <a href="dashboard.html" class="nav-link">Dashboard</a>
+                <a href="admin.html" class="nav-link active">Administración</a>
+            </div>
+            
+            <div class="user-menu" id="user-menu">
+                <div class="user-info">
+                    <i class="fas fa-user-circle"></i>
+                    <span id="username">Admin</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="user-dropdown">
+                    <a href="dashboard.html" class="dropdown-item">
+                        <i class="fas fa-tachometer-alt"></i>
+                        Dashboard
+                    </a>
+                    <a href="index.html" class="dropdown-item">
+                        <i class="fas fa-home"></i>
+                        Inicio
+                    </a>
+                    <a href="#" class="dropdown-item" onclick="auth.logout()">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Cerrar Sesión
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <!-- Admin Header -->
+        <div class="admin-header">
+            <div class="container">
+                <h1><i class="fas fa-cog"></i> Panel de Administración</h1>
+                <p>Gestiona el contenido y usuarios del blog</p>
+            </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <section class="stats-section">
+            <div class="container">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-file-alt"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="total-stories">0</h3>
+                            <p>Historias Totales</p>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="total-users">0</h3>
+                            <p>Usuarios Registrados</p>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-flag"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="flagged-stories">0</h3>
+                            <p>Historias Reportadas</p>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-ban"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="banned-users">0</h3>
+                            <p>Usuarios Baneados</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Admin Tabs -->
+        <section class="admin-tabs">
+            <div class="container">
+                <div class="tabs">
+                    <button class="tab-btn active" data-tab="stories">
+                        <i class="fas fa-file-alt"></i>
+                        Historias
+                    </button>
+                    <button class="tab-btn" data-tab="users">
+                        <i class="fas fa-users"></i>
+                        Usuarios
+                    </button>
+                    <button class="tab-btn" data-tab="moderation">
+                        <i class="fas fa-shield-alt"></i>
+                        Moderación
+                    </button>
+                    <button class="tab-btn" data-tab="logs">
+                        <i class="fas fa-list"></i>
+                        Logs
+                    </button>
+                </div>
+
+                <!-- Tab Content -->
+                <div class="tab-content">
+                    <!-- Stories Tab -->
+                    <div class="tab-pane active" id="stories-tab">
+                        <div class="tab-header">
+                            <h2>Gestión de Historias</h2>
+                            <div class="tab-actions">
+                                <select id="story-status-filter">
+                                    <option value="all">Todas las historias</option>
+                                    <option value="active">Activas</option>
+                                    <option value="flagged">Reportadas</option>
+                                    <option value="deleted">Eliminadas</option>
+                                </select>
+                                <button class="btn btn-primary" onclick="admin.refreshStories()">
+                                    <i class="fas fa-sync-alt"></i>
+                                    Actualizar
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="stories-table-container">
+                            <table class="admin-table" id="stories-table">
+                                <thead>
+                                    <tr>
+                                        <th>Título</th>
+                                        <th>Autor</th>
+                                        <th>Estado</th>
+                                        <th>Fecha</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="stories-tbody">
+                                    <!-- Las historias se cargarán aquí -->
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Stories Pagination -->
+                        <div class="pagination" id="stories-pagination">
+                            <!-- Paginación se generará aquí -->
+                        </div>
+                    </div>
+
+                    <!-- Users Tab -->
+                    <div class="tab-pane" id="users-tab">
+                        <div class="tab-header">
+                            <h2>Gestión de Usuarios</h2>
+                            <div class="tab-actions">
+                                <button class="btn btn-primary" onclick="admin.refreshUsers()">
+                                    <i class="fas fa-sync-alt"></i>
+                                    Actualizar
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="users-table-container">
+                            <table class="admin-table" id="users-table">
+                                <thead>
+                                    <tr>
+                                        <th>Usuario</th>
+                                        <th>Rol</th>
+                                        <th>Estado</th>
+                                        <th>Último Login</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="users-tbody">
+                                    <!-- Los usuarios se cargarán aquí -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Moderation Tab -->
+                    <div class="tab-pane" id="moderation-tab">
+                        <div class="tab-header">
+                            <h2>Panel de Moderación</h2>
+                        </div>
+
+                        <div class="moderation-grid">
+                            <div class="moderation-card">
+                                <h3><i class="fas fa-flag"></i> Historias Reportadas</h3>
+                                <div id="flagged-stories-list">
+                                    <!-- Historias reportadas se cargarán aquí -->
+                                </div>
+                            </div>
+
+                            <div class="moderation-card">
+                                <h3><i class="fas fa-ban"></i> Usuarios Baneados</h3>
+                                <div id="banned-users-list">
+                                    <!-- Usuarios baneados se cargarán aquí -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Logs Tab -->
+                    <div class="tab-pane" id="logs-tab">
+                        <div class="tab-header">
+                            <h2>Logs de Actividad</h2>
+                            <div class="tab-actions">
+                                <button class="btn btn-outline" onclick="admin.clearLogs()">
+                                    <i class="fas fa-trash"></i>
+                                    Limpiar Logs
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="logs-container">
+                            <div id="activity-logs">
+                                <!-- Los logs se cargarán aquí -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modals -->
+    
+    <!-- Story Details Modal -->
+    <div class="modal" id="story-details-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Detalles de la Historia</h2>
+                <button class="modal-close" onclick="admin.closeStoryModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="story-details-content">
+                <!-- Los detalles se cargarán aquí -->
+            </div>
+        </div>
+    </div>
+
+    <!-- User Details Modal -->
+    <div class="modal" id="user-details-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Detalles del Usuario</h2>
+                <button class="modal-close" onclick="admin.closeUserModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="user-details-content">
+                <!-- Los detalles se cargarán aquí -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Ban User Modal -->
+    <div class="modal" id="ban-user-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Banear Usuario</h2>
+                <button class="modal-close" onclick="admin.closeBanModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="ban-user-form">
+                    <div class="form-group">
+                        <label for="ban-reason">Motivo del baneo:</label>
+                        <textarea id="ban-reason" required placeholder="Explica el motivo del baneo..."></textarea>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-outline" onclick="admin.closeBanModal()">Cancelar</button>
+                        <button type="submit" class="btn btn-error">Banear Usuario</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/admin.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html> 
