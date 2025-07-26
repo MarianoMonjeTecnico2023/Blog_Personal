@@ -17,6 +17,11 @@ class Auth {
         if (api.isAuthenticated() && !api.isTokenExpired()) {
             this.currentUser = api.getUserFromToken();
             this.updateUI();
+            
+            // Forzar actualización adicional después de un breve delay
+            setTimeout(() => {
+                this.updateUI();
+            }, 200);
         } else {
             // Limpiar token expirado o inválido
             api.logout();
@@ -322,9 +327,14 @@ class Auth {
 
         if (this.currentUser && api.isAuthenticated() && !api.isTokenExpired()) {
             // Usuario autenticado válido
-            if (authButtons) authButtons.style.display = 'none';
+            if (authButtons) {
+                authButtons.style.display = 'none';
+                authButtons.style.visibility = 'hidden';
+            }
             if (userMenu) {
                 userMenu.style.display = 'block';
+                userMenu.style.visibility = 'visible';
+                userMenu.style.opacity = '1';
                 if (usernameDisplay) {
                     usernameDisplay.textContent = this.currentUser.username;
                 }
@@ -333,14 +343,21 @@ class Auth {
             // Mostrar enlace de administración solo para admins
             if (adminLink && this.currentUser.role === 'admin') {
                 adminLink.style.display = 'block';
+                adminLink.style.visibility = 'visible';
                 adminLink.href = 'admin.html';
             } else if (adminLink) {
                 adminLink.style.display = 'none';
             }
         } else {
             // Usuario no autenticado o token expirado
-            if (authButtons) authButtons.style.display = 'flex';
-            if (userMenu) userMenu.style.display = 'none';
+            if (authButtons) {
+                authButtons.style.display = 'flex';
+                authButtons.style.visibility = 'visible';
+            }
+            if (userMenu) {
+                userMenu.style.display = 'none';
+                userMenu.style.visibility = 'hidden';
+            }
             
             // Ocultar enlace de administración
             if (adminLink) {

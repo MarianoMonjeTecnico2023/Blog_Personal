@@ -364,9 +364,6 @@ class Main {
 document.addEventListener('DOMContentLoaded', () => {
     const app = new Main();
     
-    // Inicializar autenticación
-    auth.init();
-    
     // Configurar funciones adicionales
     app.setupActionButtons();
     app.setupFooterLinks();
@@ -376,6 +373,26 @@ document.addEventListener('DOMContentLoaded', () => {
     app.setupForms();
     app.setupAccessibility();
     app.setupPWA();
+    
+    // Inicializar autenticación después de que todo esté configurado
+    setTimeout(() => {
+        if (typeof auth !== 'undefined') {
+            auth.init();
+            // Forzar actualización adicional
+            setTimeout(() => {
+                auth.updateUI();
+            }, 100);
+        } else {
+            console.error('Auth no está disponible');
+        }
+    }, 100);
+});
+
+// También inicializar cuando la ventana esté completamente cargada
+window.addEventListener('load', () => {
+    if (typeof auth !== 'undefined') {
+        auth.updateUI();
+    }
 });
 
 // Manejar errores no capturados
