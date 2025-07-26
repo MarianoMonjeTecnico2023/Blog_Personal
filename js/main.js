@@ -303,7 +303,7 @@ class Main {
         // Registrar service worker si está disponible
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js')
+                navigator.serviceWorker.register('/Blog_Personal/sw.js')
                     .then(registration => {
                         // Service Worker registrado correctamente
                     })
