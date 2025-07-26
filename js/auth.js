@@ -20,6 +20,16 @@ class Auth {
     checkAuthStatus() {
         if (api.isAuthenticated() && !api.isTokenExpired()) {
             this.currentUser = api.getUserFromToken();
+            
+            // Debug temporal - remover después de verificar
+            if (this.currentUser) {
+                console.log('🔍 DEBUG - Información del usuario:', {
+                    username: this.currentUser.username,
+                    role: this.currentUser.role,
+                    exp: this.currentUser.exp
+                });
+            }
+            
             this.updateUI();
         } else {
             // Limpiar token expirado o inválido
@@ -299,6 +309,7 @@ class Auth {
         const authButtons = document.querySelector('.nav-auth');
         const userMenu = document.getElementById('user-menu');
         const usernameDisplay = document.getElementById('username-display');
+        const adminLink = document.getElementById('admin-link');
 
         if (this.currentUser && api.isAuthenticated() && !api.isTokenExpired()) {
             // Usuario autenticado válido
@@ -309,10 +320,27 @@ class Auth {
                     usernameDisplay.textContent = this.currentUser.username;
                 }
             }
+            
+            // Mostrar enlace de administración solo para admins
+            if (adminLink && this.currentUser.role === 'admin') {
+                console.log('🔍 DEBUG - Usuario es admin, mostrando enlace de administración');
+                adminLink.style.display = 'block';
+                adminLink.href = 'admin.html';
+            } else {
+                console.log('🔍 DEBUG - Usuario NO es admin o no hay adminLink:', {
+                    hasAdminLink: !!adminLink,
+                    userRole: this.currentUser?.role
+                });
+            }
         } else {
             // Usuario no autenticado o token expirado
             if (authButtons) authButtons.style.display = 'flex';
             if (userMenu) userMenu.style.display = 'none';
+            
+            // Ocultar enlace de administración
+            if (adminLink) {
+                adminLink.style.display = 'none';
+            }
         }
     }
 
@@ -322,9 +350,12 @@ class Auth {
         this.currentUser = null;
         this.updateUI();
         
-        // Redirigir a la página principal si no estamos ahí
-        if (window.location.pathname !== '/' && window.location.pathname !== '/index.html') {
-            window.location.href = '/';
+        // Redirigir a la página principal considerando el subdirectorio
+        const currentPath = window.location.pathname;
+        const basePath = currentPath.includes('/Blog_Personal/') ? '/Blog_Personal/' : '/';
+        
+        if (!currentPath.endsWith('index.html') && !currentPath.endsWith('/')) {
+            window.location.href = basePath + 'index.html';
         }
         
         this.showNotification('Sesión cerrada correctamente', 'info');

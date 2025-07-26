@@ -16,7 +16,7 @@ class Dashboard {
     // Verificar autenticación
     checkAuth() {
         if (!auth.isAuthenticated()) {
-            window.location.href = 'index.html';
+            redirectTo('index.html');
             return;
         }
 
@@ -221,7 +221,7 @@ class Dashboard {
                 auth.showNotification('Tu sesión ha expirado. Por favor, inicia sesión nuevamente.', 'error');
                 // Redirigir al login después de un delay
                 setTimeout(() => {
-                    window.location.href = '/frontend/index.html';
+                    redirectTo('index.html');
                 }, 2000);
             } else {
                 auth.showNotification(`Error al subir imágenes: ${error.message}`, 'error');
@@ -706,7 +706,7 @@ class Dashboard {
 
     // Ver historia
     viewStory(storyId) {
-        window.location.href = `story.html?id=${storyId}`;
+        redirectTo(`story.html?id=${storyId}`);
     }
 
     // Eliminar historia

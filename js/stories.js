@@ -32,7 +32,7 @@ class Stories {
         document.getElementById('write-btn')?.addEventListener('click', () => {
             if (auth.isAuthenticated()) {
                 // Redirigir al dashboard para escribir
-                window.location.href = 'dashboard.html';
+                redirectTo('dashboard.html');
             } else {
                 auth.showLoginModal();
             }
@@ -138,7 +138,7 @@ class Stories {
                     ${(this.searchTerm || this.selectedAuthor) ? 
                         '<button class="btn btn-primary" onclick="stories.clearFilters()">Limpiar filtros</button>' : 
                         (auth.isAuthenticated() ? 
-                            '<button class="btn btn-primary" onclick="window.location.href=\'dashboard.html\'">Escribir Historia</button>' : 
+                            '<button class="btn btn-primary" onclick="redirectTo(\'dashboard.html\')">Escribir Historia</button>' : 
                             '<button class="btn btn-primary" onclick="auth.showLoginModal()">Iniciar Sesión</button>')
                     }
                 </div>
@@ -284,7 +284,7 @@ class Stories {
     // Ver historia
     viewStory(storyId) {
         // Redirigir a la página de historia individual
-        window.location.href = `story.html?id=${storyId}`;
+        redirectTo(`story.html?id=${storyId}`);
     }
 
     // Recargar historias

@@ -1,4 +1,15 @@
 // ===== ARCHIVO PRINCIPAL =====
+
+// Función helper para redirecciones
+function redirectTo(path) {
+    const currentPath = window.location.pathname;
+    const basePath = currentPath.includes('/Blog_Personal/') ? '/Blog_Personal/' : '/';
+    window.location.href = basePath + path;
+}
+
+// Hacer la función disponible globalmente
+window.redirectTo = redirectTo;
+
 class Main {
     constructor() {
         this.init();
@@ -187,7 +198,7 @@ class Main {
         if (writeBtn) {
             writeBtn.addEventListener('click', () => {
                 if (auth.isAuthenticated()) {
-                    window.location.href = 'dashboard.html';
+                    redirectTo('dashboard.html');
                 } else {
                     auth.showLoginModal();
                 }

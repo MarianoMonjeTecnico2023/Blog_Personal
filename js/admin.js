@@ -24,7 +24,7 @@ class AdminPanel {
             if (!user || user.role !== 'admin') {
                 this.showError('Acceso denegado. Se requieren permisos de administrador.');
                 setTimeout(() => {
-                    window.location.href = 'index.html';
+                    redirectTo('index.html');
                 }, 3000);
                 return;
             }
