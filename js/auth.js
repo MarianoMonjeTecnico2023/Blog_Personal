@@ -18,10 +18,18 @@ class Auth {
             this.currentUser = api.getUserFromToken();
             this.updateUI();
             
-            // Forzar actualización adicional después de un breve delay
+            // Forzar actualización múltiple para asegurar que funcione
             setTimeout(() => {
                 this.updateUI();
-            }, 200);
+            }, 100);
+            
+            setTimeout(() => {
+                this.updateUI();
+            }, 500);
+            
+            setTimeout(() => {
+                this.updateUI();
+            }, 1000);
         } else {
             // Limpiar token expirado o inválido
             api.logout();
@@ -326,14 +334,17 @@ class Auth {
         const adminLink = document.getElementById('admin-link');
 
         if (this.currentUser && api.isAuthenticated() && !api.isTokenExpired()) {
-            // Usuario autenticado válido
+            // Usuario autenticado válido - FORZAR VISIBILIDAD
             if (authButtons) {
-                authButtons.classList.add('user-authenticated');
-                authButtons.classList.remove('user-not-authenticated');
+                authButtons.style.setProperty('display', 'none', 'important');
+                authButtons.style.setProperty('visibility', 'hidden', 'important');
+                authButtons.style.setProperty('opacity', '0', 'important');
             }
             if (userMenu) {
-                userMenu.classList.add('user-authenticated');
-                userMenu.classList.remove('user-not-authenticated');
+                userMenu.style.setProperty('display', 'block', 'important');
+                userMenu.style.setProperty('visibility', 'visible', 'important');
+                userMenu.style.setProperty('opacity', '1', 'important');
+                userMenu.style.setProperty('position', 'relative', 'important');
                 if (usernameDisplay) {
                     usernameDisplay.textContent = this.currentUser.username;
                 }
@@ -341,28 +352,27 @@ class Auth {
             
             // Mostrar enlace de administración solo para admins
             if (adminLink && this.currentUser.role === 'admin') {
-                adminLink.classList.add('user-authenticated');
-                adminLink.classList.remove('user-not-authenticated');
+                adminLink.style.setProperty('display', 'block', 'important');
+                adminLink.style.setProperty('visibility', 'visible', 'important');
                 adminLink.href = 'admin.html';
             } else if (adminLink) {
-                adminLink.classList.remove('user-authenticated');
-                adminLink.classList.add('user-not-authenticated');
+                adminLink.style.setProperty('display', 'none', 'important');
             }
         } else {
             // Usuario no autenticado o token expirado
             if (authButtons) {
-                authButtons.classList.remove('user-authenticated');
-                authButtons.classList.add('user-not-authenticated');
+                authButtons.style.setProperty('display', 'flex', 'important');
+                authButtons.style.setProperty('visibility', 'visible', 'important');
+                authButtons.style.setProperty('opacity', '1', 'important');
             }
             if (userMenu) {
-                userMenu.classList.remove('user-authenticated');
-                userMenu.classList.add('user-not-authenticated');
+                userMenu.style.setProperty('display', 'none', 'important');
+                userMenu.style.setProperty('visibility', 'hidden', 'important');
             }
             
             // Ocultar enlace de administración
             if (adminLink) {
-                adminLink.classList.remove('user-authenticated');
-                adminLink.classList.add('user-not-authenticated');
+                adminLink.style.setProperty('display', 'none', 'important');
             }
         }
     }
