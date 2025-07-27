@@ -229,42 +229,80 @@ class AdminPanel {
 
     // Renderizar tabla de usuarios
     renderUsersTable() {
-        const tbody = document.getElementById('users-tbody');
-        if (!tbody) return;
+        const container = document.getElementById('users-list');
+        if (!container) return;
 
-        tbody.innerHTML = this.users.map(user => `
-            <tr>
-                <td>${this.escapeHtml(user.username)}</td>
-                <td>
-                    <span class="role-badge role-${user.role}">
-                        ${user.role === 'admin' ? 'Administrador' : 'Usuario'}
-                    </span>
-                </td>
-                <td>
-                    <span class="status-badge status-${user.status}">
-                        ${user.status === 'active' ? 'Activo' : 'Baneado'}
-                    </span>
-                </td>
-                <td>${user.lastLogin ? new Date(user.lastLogin).toLocaleDateString('es-ES') : 'Nunca'}</td>
-                <td>
-                    <div class="action-buttons">
-                        <button class="btn btn-sm btn-outline" onclick="admin.viewUserDetails('${user.username}')">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                        ${user.status === 'active' && user.role !== 'admin' ? 
-                            `<button class="btn btn-sm btn-error" onclick="admin.showBanModal('${user.username}')">
-                                <i class="fas fa-ban"></i>
-                            </button>` : ''
-                        }
-                        ${user.status === 'banned' ? 
-                            `<button class="btn btn-sm btn-success" onclick="admin.unbanUser('${user.username}')">
-                                <i class="fas fa-user-check"></i>
-                            </button>` : ''
-                        }
-                    </div>
-                </td>
-            </tr>
-        `).join('');
+        if (this.users.length === 0) {
+            container.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-users"></i>
+                    <h3>No hay usuarios registrados</h3>
+                    <p>Los usuarios aparecerán aquí cuando se registren.</p>
+                </div>
+            `;
+            return;
+        }
+
+        container.innerHTML = `
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Usuario</th>
+                        <th>Rol</th>
+                        <th>Fecha de Registro</th>
+                        <th>Último Login</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${this.users.map(user => `
+                        <tr>
+                            <td>
+                                <div class="user-info">
+                                    <strong>${this.escapeHtml(user.username)}</strong>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="role-badge role-${user.role}">
+                                    ${user.role === 'admin' ? 'Administrador' : 'Usuario'}
+                                </span>
+                            </td>
+                            <td>${user.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'N/A'}</td>
+                            <td>${user.lastLogin ? new Date(user.lastLogin).toLocaleDateString() : 'Nunca'}</td>
+                            <td>
+                                <span class="status-badge ${user.isBanned ? 'status-banned' : 'status-active'}">
+                                    ${user.isBanned ? 'Baneado' : 'Activo'}
+                                </span>
+                            </td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="btn btn-sm btn-outline" onclick="admin.viewUserDetails('${user.username}')">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    ${user.role === 'admin' ? 
+                                        `<button class="btn btn-sm btn-warning" onclick="admin.changeUserRole('${user.username}', 'user')" title="Quitar admin">
+                                            <i class="fas fa-user-minus"></i>
+                                        </button>` :
+                                        `<button class="btn btn-sm btn-success" onclick="admin.changeUserRole('${user.username}', 'admin')" title="Hacer admin">
+                                            <i class="fas fa-user-shield"></i>
+                                        </button>`
+                                    }
+                                    ${user.isBanned ? 
+                                        `<button class="btn btn-sm btn-success" onclick="admin.unbanUser('${user.username}')">
+                                            <i class="fas fa-user-check"></i>
+                                        </button>` :
+                                        `<button class="btn btn-sm btn-error" onclick="admin.showBanModal('${user.username}')">
+                                            <i class="fas fa-ban"></i>
+                                        </button>`
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+        `;
     }
 
     // Cargar datos de moderación
@@ -427,6 +465,29 @@ class AdminPanel {
             this.loadStats();
         } catch (error) {
             this.showError('Error al desbanear el usuario');
+        }
+    }
+
+    // Cambiar rol de usuario
+    async changeUserRole(username, newRole) {
+        try {
+            const confirmMessage = newRole === 'admin' 
+                ? `¿Estás seguro de que quieres hacer admin al usuario "${username}"?`
+                : `¿Estás seguro de que quieres quitar los privilegios de admin al usuario "${username}"?`;
+            
+            if (!confirm(confirmMessage)) {
+                return;
+            }
+
+            await api.changeUserRole(username, newRole);
+            
+            this.showSuccess(`Rol de usuario ${username} cambiado a ${newRole === 'admin' ? 'administrador' : 'usuario'} correctamente.`);
+            
+            // Recargar la lista de usuarios
+            this.loadUsers();
+            
+        } catch (error) {
+            this.showError(`Error cambiando rol de usuario: ${error.message}`);
         }
     }
 

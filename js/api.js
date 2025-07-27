@@ -243,6 +243,14 @@ class API {
         });
     }
 
+    // Cambiar rol de usuario (admin)
+    async changeUserRole(username, role) {
+        return this.request(`/admin/users/${username}/role`, {
+            method: 'PUT',
+            body: JSON.stringify({ role })
+        });
+    }
+
     // Obtener estadísticas (admin)
     async getAdminStats() {
         return this.request('/admin/stats');
