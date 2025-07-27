@@ -38,21 +38,108 @@ class Stories {
             }
         });
 
-        // Búsqueda en tiempo real
-        const searchInput = document.getElementById('search-input');
-        if (searchInput) {
-            searchInput.addEventListener('input', (e) => {
-                this.searchTerm = e.target.value;
-                this.applyFilters();
-            });
+        // Configurar búsqueda en tiempo real
+        this.setupSearch();
+    }
 
-            // Búsqueda con Enter
-            searchInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    this.searchStories();
-                }
-            });
+    // Configurar búsqueda en tiempo real
+    setupSearch() {
+        const searchInput = document.getElementById('search-input');
+        if (!searchInput) return;
+
+        let searchTimeout;
+        
+        searchInput.addEventListener('input', (e) => {
+            const query = e.target.value.trim();
+            
+            // Limpiar timeout anterior
+            clearTimeout(searchTimeout);
+            
+            // Mostrar loading
+            this.showSearchLoading();
+            
+            // Debounce: esperar 300ms después de que el usuario deje de escribir
+            searchTimeout = setTimeout(() => {
+                this.performSearch(query);
+            }, 300);
+        });
+
+        // Búsqueda con Enter
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                clearTimeout(searchTimeout);
+                this.performSearch(e.target.value.trim());
+            }
+        });
+    }
+
+    // Realizar búsqueda
+    async performSearch(query) {
+        try {
+            if (!query) {
+                this.clearSearch();
+                return;
+            }
+
+            // Filtrar historias localmente para búsqueda instantánea
+            const filteredStories = this.allStories.filter(story => 
+                story.title.toLowerCase().includes(query.toLowerCase()) ||
+                story.content.toLowerCase().includes(query.toLowerCase()) ||
+                story.username.toLowerCase().includes(query.toLowerCase())
+            );
+
+            this.renderStories(filteredStories);
+            this.updateSearchResults(filteredStories.length, query);
+            
+        } catch (error) {
+            this.showError('Error en la búsqueda: ' + error.message);
         }
+    }
+
+    // Mostrar loading de búsqueda
+    showSearchLoading() {
+        const resultsContainer = document.getElementById('search-results');
+        if (resultsContainer) {
+            resultsContainer.innerHTML = `
+                <div class="search-loading">
+                    <div class="spinner small"></div>
+                    <span>Buscando...</span>
+                </div>
+            `;
+            resultsContainer.style.display = 'block';
+        }
+    }
+
+    // Actualizar resultados de búsqueda
+    updateSearchResults(count, query) {
+        const resultsContainer = document.getElementById('search-results');
+        const resultsCount = document.getElementById('results-count');
+        
+        if (resultsContainer && resultsCount) {
+            resultsCount.textContent = count;
+            resultsContainer.innerHTML = `
+                <span id="results-count">${count}</span> historias encontradas para "${query}"
+                <button class="clear-search-btn" onclick="stories.clearSearch()">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+            resultsContainer.style.display = 'block';
+        }
+    }
+
+    // Limpiar búsqueda
+    clearSearch() {
+        const searchInput = document.getElementById('search-input');
+        const resultsContainer = document.getElementById('search-results');
+        
+        if (searchInput) {
+            searchInput.value = '';
+        }
+        if (resultsContainer) {
+            resultsContainer.style.display = 'none';
+        }
+        
+        this.renderStories(this.allStories);
     }
 
     // Cargar historias

@@ -239,28 +239,9 @@ class Main {
         });
     }
 
-    // Configurar tooltips
-    setupTooltips() {
-        const tooltipElements = document.querySelectorAll('[data-tooltip]');
-        tooltipElements.forEach(element => {
-            element.addEventListener('mouseenter', (e) => {
-                const tooltip = document.createElement('div');
-                tooltip.className = 'tooltip-text';
-                tooltip.textContent = e.target.dataset.tooltip;
-                e.target.appendChild(tooltip);
-            });
-
-            element.addEventListener('mouseleave', (e) => {
-                const tooltip = e.target.querySelector('.tooltip-text');
-                if (tooltip) {
-                    tooltip.remove();
-                }
-            });
-        });
-    }
-
-    // Configurar lazy loading para imágenes
+    // Configurar lazy loading
     setupLazyLoading() {
+        // Lazy loading de imágenes
         if ('IntersectionObserver' in window) {
             const imageObserver = new IntersectionObserver((entries, observer) => {
                 entries.forEach(entry => {
@@ -268,28 +249,144 @@ class Main {
                         const img = entry.target;
                         img.src = img.dataset.src;
                         img.classList.remove('lazy');
-                        imageObserver.unobserve(img);
+                        observer.unobserve(img);
                     }
                 });
             });
 
-            const lazyImages = document.querySelectorAll('img[data-src]');
-            lazyImages.forEach(img => imageObserver.observe(img));
+            document.querySelectorAll('img[data-src]').forEach(img => {
+                imageObserver.observe(img);
+            });
         }
-    }
 
-    // Configurar formularios
-    setupForms() {
-        const forms = document.querySelectorAll('form');
-        forms.forEach(form => {
-            form.addEventListener('submit', (e) => {
-                // Prevenir envío por defecto si no hay manejador específico
-                if (!form.dataset.handler) {
-                    e.preventDefault();
-                    auth.showNotification('Formulario en desarrollo', 'info');
+        // Lazy loading de contenido
+        const contentObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('fade-in');
                 }
             });
         });
+
+        document.querySelectorAll('.story-card, .stat-card').forEach(card => {
+            contentObserver.observe(card);
+        });
+    }
+
+    // Configurar tooltips mejorados
+    setupTooltips() {
+        const tooltipElements = document.querySelectorAll('[data-tooltip]');
+        
+        tooltipElements.forEach(element => {
+            const tooltip = document.createElement('div');
+            tooltip.className = 'tooltip';
+            tooltip.textContent = element.dataset.tooltip;
+            document.body.appendChild(tooltip);
+            
+            let timeout;
+            
+            element.addEventListener('mouseenter', (e) => {
+                timeout = setTimeout(() => {
+                    const rect = element.getBoundingClientRect();
+                    tooltip.style.left = rect.left + (rect.width / 2) - (tooltip.offsetWidth / 2) + 'px';
+                    tooltip.style.top = rect.top - tooltip.offsetHeight - 8 + 'px';
+                    tooltip.classList.add('show');
+                }, 500);
+            });
+            
+            element.addEventListener('mouseleave', () => {
+                clearTimeout(timeout);
+                tooltip.classList.remove('show');
+            });
+        });
+    }
+
+    // Configurar formularios mejorados
+    setupForms() {
+        // Validación en tiempo real
+        document.querySelectorAll('form').forEach(form => {
+            const inputs = form.querySelectorAll('input, textarea, select');
+            
+            inputs.forEach(input => {
+                input.addEventListener('blur', () => {
+                    this.validateField(input);
+                });
+                
+                input.addEventListener('input', () => {
+                    if (input.classList.contains('error')) {
+                        this.validateField(input);
+                    }
+                });
+            });
+            
+            form.addEventListener('submit', (e) => {
+                if (!this.validateForm(form)) {
+                    e.preventDefault();
+                }
+            });
+        });
+    }
+    
+    // Validar campo individual
+    validateField(field) {
+        const value = field.value.trim();
+        const type = field.type;
+        const required = field.hasAttribute('required');
+        
+        // Limpiar errores previos
+        field.classList.remove('error');
+        const errorElement = field.parentNode.querySelector('.error-message');
+        if (errorElement) {
+            errorElement.remove();
+        }
+        
+        // Validar campo requerido
+        if (required && !value) {
+            this.showFieldError(field, 'Este campo es requerido');
+            return false;
+        }
+        
+        // Validar email
+        if (type === 'email' && value) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(value)) {
+                this.showFieldError(field, 'Email inválido');
+                return false;
+            }
+        }
+        
+        // Validar contraseña
+        if (type === 'password' && value) {
+            if (value.length < 8) {
+                this.showFieldError(field, 'La contraseña debe tener al menos 8 caracteres');
+                return false;
+            }
+        }
+        
+        return true;
+    }
+    
+    // Mostrar error de campo
+    showFieldError(field, message) {
+        field.classList.add('error');
+        const errorElement = document.createElement('div');
+        errorElement.className = 'error-message';
+        errorElement.textContent = message;
+        field.parentNode.appendChild(errorElement);
+    }
+    
+    // Validar formulario completo
+    validateForm(form) {
+        const inputs = form.querySelectorAll('input, textarea, select');
+        let isValid = true;
+        
+        inputs.forEach(input => {
+            if (!this.validateField(input)) {
+                isValid = false;
+            }
+        });
+        
+        return isValid;
     }
 
     // Configurar accesibilidad
@@ -301,12 +398,99 @@ class Main {
                 e.preventDefault();
                 document.querySelector('main')?.focus();
             }
+            
+            // Navegación con flechas en el menú
+            if (e.key === 'Escape') {
+                this.closeAllModals();
+                this.closeAllDropdowns();
+            }
+            
+            // Navegación rápida
+            if (e.ctrlKey || e.metaKey) {
+                switch (e.key) {
+                    case 'h':
+                        e.preventDefault();
+                        redirectTo('index.html');
+                        break;
+                    case 'd':
+                        e.preventDefault();
+                        if (auth.isAuthenticated()) {
+                            redirectTo('dashboard.html');
+                        }
+                        break;
+                    case 'a':
+                        e.preventDefault();
+                        if (auth.isAuthenticated() && auth.getCurrentUser()?.role === 'admin') {
+                            redirectTo('admin.html');
+                        }
+                        break;
+                }
+            }
         });
 
         // Mejorar contraste para usuarios con preferencias de alto contraste
         if (window.matchMedia('(prefers-contrast: high)').matches) {
             document.body.classList.add('high-contrast');
         }
+        
+        // Reducir movimiento para usuarios con preferencias
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            document.body.classList.add('reduced-motion');
+        }
+        
+        // Mejorar focus visible
+        this.setupFocusManagement();
+        
+        // Agregar skip links
+        this.addSkipLinks();
+    }
+    
+    // Configurar gestión de focus
+    setupFocusManagement() {
+        // Mantener focus dentro de modales
+        document.addEventListener('keydown', (e) => {
+            const modal = document.querySelector('.modal.active');
+            if (modal && e.key === 'Tab') {
+                const focusableElements = modal.querySelectorAll(
+                    'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+                );
+                const firstElement = focusableElements[0];
+                const lastElement = focusableElements[focusableElements.length - 1];
+                
+                if (e.shiftKey && document.activeElement === firstElement) {
+                    e.preventDefault();
+                    lastElement.focus();
+                } else if (!e.shiftKey && document.activeElement === lastElement) {
+                    e.preventDefault();
+                    firstElement.focus();
+                }
+            }
+        });
+    }
+    
+    // Agregar skip links para navegación por teclado
+    addSkipLinks() {
+        const skipLinks = document.createElement('div');
+        skipLinks.className = 'skip-links';
+        skipLinks.innerHTML = `
+            <a href="#main-content" class="skip-link">Saltar al contenido principal</a>
+            <a href="#navigation" class="skip-link">Saltar a la navegación</a>
+        `;
+        document.body.insertBefore(skipLinks, document.body.firstChild);
+    }
+    
+    // Cerrar todos los modales
+    closeAllModals() {
+        document.querySelectorAll('.modal.active').forEach(modal => {
+            modal.classList.remove('active');
+        });
+    }
+    
+    // Cerrar todos los dropdowns
+    closeAllDropdowns() {
+        document.querySelectorAll('.dropdown-menu.show').forEach(dropdown => {
+            dropdown.classList.remove('show');
+        });
     }
 
     // Configurar PWA (Progressive Web App)
