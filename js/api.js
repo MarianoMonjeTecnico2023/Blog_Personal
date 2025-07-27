@@ -243,6 +243,16 @@ class API {
         });
     }
 
+    // Obtener todos los usuarios (admin)
+    async getAdminUsers(page = 1, limit = 20) {
+        const params = new URLSearchParams({
+            page: page.toString(),
+            limit: limit.toString()
+        });
+        
+        return this.request(`/admin/users?${params}`);
+    }
+
     // Cambiar rol de usuario (admin)
     async changeUserRole(username, role) {
         return this.request(`/admin/users/${username}/role`, {

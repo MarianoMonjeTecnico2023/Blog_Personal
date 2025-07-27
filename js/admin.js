@@ -216,14 +216,11 @@ class AdminPanel {
     // Cargar usuarios
     async loadUsers() {
         try {
-            // Por ahora usamos datos de ejemplo
-            this.users = [
-                { username: 'admin', role: 'admin', status: 'active', lastLogin: new Date() },
-                { username: 'veggetassj', role: 'user', status: 'active', lastLogin: new Date() }
-            ];
+            const response = await api.getAdminUsers(this.currentPage, 20);
+            this.users = response.users;
             this.renderUsersTable();
         } catch (error) {
-            // Error cargando usuarios
+            this.showError('Error cargando usuarios: ' + error.message);
         }
     }
 
