@@ -9,8 +9,13 @@ class Dashboard {
 
     init() {
         this.checkAuth();
+        this.updateUserInfo();
         this.setupEventListeners();
+        this.setupTabs();
+        this.setupImageUpload();
+        this.setupMobileMenu();
         this.loadDashboardData();
+        this.hideAllLoadingSpinners(); // Ocultar todos los spinners al inicializar
     }
 
     // Verificar autenticación
@@ -833,6 +838,16 @@ class Dashboard {
                 navMenu.classList.toggle('active');
             });
         }
+    }
+
+    // Ocultar todos los loading spinners
+    hideAllLoadingSpinners() {
+        const loadingSpinners = document.querySelectorAll('.loading-spinner');
+        loadingSpinners.forEach(spinner => {
+            if (spinner.id !== 'stories-loading') {
+                spinner.style.display = 'none';
+            }
+        });
     }
 }
 
