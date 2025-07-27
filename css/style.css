@@ -1712,30 +1712,6 @@ a:hover {
 } 
 
 /* ===== ACCESIBILIDAD ===== */
-.skip-links {
-    position: absolute;
-    top: -40px;
-    left: 6px;
-    z-index: 10000;
-}
-
-.skip-link {
-    position: absolute;
-    top: -40px;
-    left: 6px;
-    background: var(--primary-600);
-    color: var(--white);
-    padding: var(--spacing-2) var(--spacing-4);
-    text-decoration: none;
-    border-radius: var(--border-radius);
-    font-weight: 500;
-    transition: top 0.3s;
-}
-
-.skip-link:focus {
-    top: 6px;
-}
-
 /* Alto contraste */
 .high-contrast {
     --primary-600: #0000ff;

@@ -440,9 +440,6 @@ class Main {
         
         // Mejorar focus visible
         this.setupFocusManagement();
-        
-        // Agregar skip links
-        this.addSkipLinks();
     }
     
     // Configurar gestión de focus
@@ -466,17 +463,6 @@ class Main {
                 }
             }
         });
-    }
-    
-    // Agregar skip links para navegación por teclado
-    addSkipLinks() {
-        const skipLinks = document.createElement('div');
-        skipLinks.className = 'skip-links';
-        skipLinks.innerHTML = `
-            <a href="#main-content" class="skip-link">Saltar al contenido principal</a>
-            <a href="#navigation" class="skip-link">Saltar a la navegación</a>
-        `;
-        document.body.insertBefore(skipLinks, document.body.firstChild);
     }
     
     // Cerrar todos los modales
