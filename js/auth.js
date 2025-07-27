@@ -10,6 +10,15 @@ class Auth {
         this.checkAuthStatus();
         this.setupEventListeners();
         this.setupModals();
+        this.hideDropdown(); // Ocultar dropdown al inicializar
+    }
+
+    // Ocultar dropdown al inicializar
+    hideDropdown() {
+        const dropdown = document.getElementById('dropdown-menu');
+        if (dropdown) {
+            dropdown.classList.remove('show');
+        }
     }
 
     // Verificar estado de autenticación al cargar
@@ -375,6 +384,9 @@ class Auth {
                 adminLink.style.setProperty('display', 'none', 'important');
             }
         }
+        
+        // Asegurar que el dropdown esté oculto
+        this.hideDropdown();
     }
 
     // Cerrar sesión

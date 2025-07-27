@@ -182,6 +182,11 @@
         width: 100%;
         box-shadow: none;
         border-top: 1px solid var(--gray-200);
+        display: none; /* Ocultar por defecto en móvil */
+    }
+    
+    .dropdown-menu.show {
+        display: block; /* Solo mostrar cuando tenga la clase .show */
     }
     
     .dropdown-item {
