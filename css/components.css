@@ -511,24 +511,34 @@
 
 .empty-state {
     text-align: center;
-    padding: var(--spacing-12);
+    padding: var(--spacing-8);
     color: var(--gray-500);
 }
 
 .empty-state i {
-    font-size: 4rem;
+    font-size: 3rem;
     margin-bottom: var(--spacing-4);
     opacity: 0.5;
 }
 
 .empty-state h3 {
-    color: var(--gray-600);
     margin-bottom: var(--spacing-2);
+    color: var(--gray-600);
 }
 
 .empty-state p {
     color: var(--gray-500);
-    margin-bottom: var(--spacing-6);
+    font-size: var(--font-size-sm);
+}
+
+/* Estado vacío en tablas */
+.admin-table .empty-state {
+    padding: var(--spacing-6);
+}
+
+.admin-table .empty-state td {
+    border: none;
+    padding: var(--spacing-8);
 }
 
 .error-state {
