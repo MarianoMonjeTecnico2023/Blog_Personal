@@ -103,6 +103,11 @@ class Dashboard {
                 this.loadMyStories();
                 break;
             case 'images':
+                // Mostrar loading spinner antes de cargar imágenes
+                const imagesLoading = document.getElementById('images-loading');
+                if (imagesLoading) {
+                    imagesLoading.style.display = 'block';
+                }
                 this.loadMyImages();
                 break;
             case 'drafts':
