@@ -216,14 +216,10 @@ class AdminPanel {
     // Cargar usuarios
     async loadUsers() {
         try {
-            console.log('🔄 Cargando usuarios...');
             const response = await api.getAdminUsers(this.currentPage, 20);
-            console.log('📊 Respuesta del servidor:', response);
             this.users = response.users;
-            console.log('👥 Usuarios cargados:', this.users);
             this.renderUsersTable();
         } catch (error) {
-            console.error('❌ Error cargando usuarios:', error);
             this.showError('Error cargando usuarios: ' + error.message);
         }
     }
@@ -231,11 +227,7 @@ class AdminPanel {
     // Renderizar tabla de usuarios
     renderUsersTable() {
         const container = document.getElementById('users-tbody');
-        console.log('🎯 Container encontrado:', container);
-        if (!container) {
-            console.error('❌ No se encontró el container users-tbody');
-            return;
-        }
+        if (!container) return;
 
         if (this.users.length === 0) {
             container.innerHTML = `

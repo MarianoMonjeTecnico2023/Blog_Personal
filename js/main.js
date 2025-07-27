@@ -552,9 +552,7 @@ document.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => {
                 auth.updateUI();
             }, 100);
-        } else {
-            console.error('Auth no está disponible');
-        }
+                        }
     }, 100);
 });
 
